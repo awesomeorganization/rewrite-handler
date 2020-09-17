@@ -1,0 +1,10 @@
+.editorconfig
+.eslintignore
+.eslintrc.json
+.gitignore
+.npmignore
+.prettierrc.json
+.vscode
+*.log
+node_modules
+test.js

@@ -1,0 +1,42 @@
+{
+  "name": "@awesomeorganization/rewrite-handler",
+  "description": "[ESM] The rewrite handler for Node.js",
+  "version": "0.1.0",
+  "main": "main.js",
+  "type": "module",
+  "repository": "github:awesomeorganization/rewrite-handler",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "scripts": {
+    "test": "node test.js"
+  },
+  "author": {
+    "name": "sergeysedoy97"
+  },
+  "devDependencies": {
+    "@awesomeorganization/servers": "latest",
+    "eslint-config-prettier": "latest",
+    "eslint-plugin-node": "latest"
+  },
+  "peerDependencies": {
+    "eslint": "latest",
+    "prettier": "latest"
+  },
+  "peerDependenciesMeta": {
+    "eslint": {
+      "optional": true
+    },
+    "prettier": {
+      "optional": true
+    }
+  },
+  "keywords": [
+    "rewrite",
+    "rewriterule",
+    "rewriterules",
+    "uri",
+    "url"
+  ]
+}
