@@ -1,7 +1,7 @@
 {
   "name": "@awesomeorganization/rewrite-handler",
   "description": "[ESM] The rewrite handler for Node.js",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "main.js",
   "type": "module",
   "repository": "github:awesomeorganization/rewrite-handler",
