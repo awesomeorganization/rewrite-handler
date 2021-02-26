@@ -1,14 +1,11 @@
 {
   "name": "@awesomeorganization/rewrite-handler",
   "description": "[ESM] The rewrite handler for Node.js",
-  "version": "0.1.2",
-  "main": "main.js",
+  "version": "0.1.3",
+  "exports": "./main.js",
   "type": "module",
   "repository": "github:awesomeorganization/rewrite-handler",
   "license": "MIT",
-  "engines": {
-    "node": ">=14.0.0"
-  },
   "author": {
     "name": "sergeysedoy97"
   },

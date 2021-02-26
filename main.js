@@ -1,4 +1,5 @@
-import { STATUS_CODES } from 'http'
+// REFERENCES
+// https://tools.ietf.org/html/rfc7231#section-7.1.2
 
 export const REDIRECT_STATUS_CODES = {
   FOUND: 302,
@@ -10,7 +11,6 @@ export const REDIRECT_STATUS_CODES = {
 
 export const rewriteHandler = ({ rules = [] } = { rules: [] }) => {
   const compiledRules = []
-
   const handle = ({ request, response }) => {
     let statusCode
     for (const rule of compiledRules) {
@@ -25,17 +25,16 @@ export const rewriteHandler = ({ rules = [] } = { rules: [] }) => {
         }
       }
     }
-    // If last rule has a statusCode
+    // IF LAST RULE HAS A STATUS CODE
     if (statusCode !== undefined) {
       response
-        .writeHead(statusCode, STATUS_CODES[statusCode], {
+        .writeHead(statusCode, {
           Location: request.url,
         })
         .end()
     }
   }
-
-  const push = ({ host, isBreak = false, isCaseSensitive, isUnicode, method, pattern, replacement, statusCode }) => {
+  const push = ({ host, isBreak = false, isCaseSensitive = false, isUnicode = false, method, pattern, replacement, statusCode }) => {
     let flags = ''
     if (isCaseSensitive === true) {
       flags += 'i'
@@ -52,11 +51,9 @@ export const rewriteHandler = ({ rules = [] } = { rules: [] }) => {
       statusCode,
     })
   }
-
   for (const rule of rules) {
     push(rule)
   }
-
   return {
     handle,
     push,

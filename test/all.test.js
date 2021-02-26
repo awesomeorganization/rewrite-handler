@@ -4,7 +4,20 @@ import { http } from '@awesomeorganization/servers'
 import { strictEqual } from 'assert'
 import undici from 'undici'
 
-const main = async () => {
+const data = (body) => {
+  return new Promise((resolve) => {
+    let chunks = ''
+    body.setEncoding('utf8')
+    body.on('data', (chunk) => {
+      chunks += chunk
+    })
+    body.once('end', () => {
+      resolve(chunks)
+    })
+  })
+}
+
+const test = async () => {
   const host = '127.0.0.1'
   const port = 3000
   const { handle, push } = rewriteHandler()
@@ -18,7 +31,10 @@ const main = async () => {
     replacement: '/files/$1',
   })
   const socket = await http({
-    host,
+    listenOptions: {
+      host,
+      port,
+    },
     onRequest(request, response) {
       handle({
         request,
@@ -28,7 +44,6 @@ const main = async () => {
         response.end(request.url)
       }
     },
-    port,
   })
   const client = new undici.Client(`http://${host}:${port}`)
   {
@@ -43,15 +58,9 @@ const main = async () => {
       method: 'GET',
       path: '/public/test',
     })
-    const chunks = []
-    body.on('data', (chunk) => {
-      chunks.push(chunk)
-    })
-    body.on('end', () => {
-      strictEqual(Buffer.concat(chunks).toString('utf-8'), '/files/test')
-    })
+    strictEqual(await data(body), '/files/test')
   }
-  socket.unref()
+  socket.close()
 }
 
-main()
+test()
