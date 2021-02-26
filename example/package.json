@@ -7,8 +7,8 @@
     "node": ">=14.0.0"
   },
   "dependencies": {
-    "@awesomeorganization/rewrite-handler": "latest",
-    "@awesomeorganization/servers": "latest",
-    "@awesomeorganization/static-handler": "latest"
+    "@awesomeorganization/rewrite-handler": "0.1.3",
+    "@awesomeorganization/servers": "0.2.2",
+    "@awesomeorganization/static-handler": "0.2.0"
   }
 }

@@ -17,9 +17,7 @@ const data = (body) => {
   })
 }
 
-const test = async () => {
-  const host = '127.0.0.1'
-  const port = 3000
+const test = () => {
   const { handle, push } = rewriteHandler()
   push({
     pattern: '^/old/(.*)',
@@ -30,10 +28,29 @@ const test = async () => {
     pattern: '^/public/(.*)',
     replacement: '/files/$1',
   })
-  const socket = await http({
+  http({
     listenOptions: {
-      host,
-      port,
+      host: '127.0.0.1',
+      port: 0,
+    },
+    async onListening() {
+      const { address, port } = this.address()
+      const client = new undici.Client(`http://${address}:${port}`)
+      {
+        const { headers } = await client.request({
+          method: 'GET',
+          path: '/old/test',
+        })
+        strictEqual(headers.location, '/new/test')
+      }
+      {
+        const { body } = await client.request({
+          method: 'GET',
+          path: '/public/test',
+        })
+        strictEqual(await data(body), '/files/test')
+      }
+      this.close()
     },
     onRequest(request, response) {
       handle({
@@ -45,22 +62,6 @@ const test = async () => {
       }
     },
   })
-  const client = new undici.Client(`http://${host}:${port}`)
-  {
-    const { headers } = await client.request({
-      method: 'GET',
-      path: '/old/test',
-    })
-    strictEqual(headers.location, '/new/test')
-  }
-  {
-    const { body } = await client.request({
-      method: 'GET',
-      path: '/public/test',
-    })
-    strictEqual(await data(body), '/files/test')
-  }
-  socket.close()
 }
 
 test()
