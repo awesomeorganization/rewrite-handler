@@ -17,8 +17,20 @@ export const rewriteHandler = ({ rules = [] } = { rules: [] }) => {
       if ((rule.method !== undefined && rule.method !== request.method) || (rule.host !== undefined && rule.host !== request.headers.host)) {
         continue
       }
-      if (rule.pattern.test(request.url) === true) {
-        request.url = request.url.replace(rule.pattern, rule.replacement)
+      let isReplaced = false
+      if (rule.replacementFunction === undefined) {
+        if (rule.pattern.test(request.url) === true) {
+          request.url = request.url.replace(rule.pattern, rule.replacement)
+          isReplaced = true
+        }
+      } else {
+        const url = rule.replacementFunction(request.url)
+        if (url !== undefined) {
+          request.url = url
+          isReplaced = true
+        }
+      }
+      if (isReplaced === true) {
         statusCode = rule.statusCode
         if (rule.isBreak === true) {
           break
@@ -34,7 +46,7 @@ export const rewriteHandler = ({ rules = [] } = { rules: [] }) => {
         .end()
     }
   }
-  const push = ({ host, isBreak = false, isCaseSensitive = false, isUnicode = false, method, pattern, replacement, statusCode }) => {
+  const compilePattern = ({ isCaseSensitive, isUnicode, pattern }) => {
     let flags = ''
     if (isCaseSensitive === true) {
       flags += 'i'
@@ -42,12 +54,26 @@ export const rewriteHandler = ({ rules = [] } = { rules: [] }) => {
     if (isUnicode === true) {
       flags += 'u'
     }
+    return new RegExp(pattern, flags)
+  }
+  const push = ({ host, isBreak = false, isCaseSensitive = false, isUnicode = false, method, pattern, replacement, replacementFunction, statusCode }) => {
+    if ((pattern === undefined || replacement === undefined) && replacementFunction === undefined) {
+      throw Error('The fields pattern and replacement can not be undefined while replacementFunction one is undefined')
+    }
     compiledRules.push({
       host,
       isBreak,
       method,
-      pattern: new RegExp(pattern, flags),
+      pattern:
+        pattern === undefined
+          ? undefined
+          : compilePattern({
+              isCaseSensitive,
+              isUnicode,
+              pattern,
+            }),
       replacement,
+      replacementFunction,
       statusCode,
     })
   }

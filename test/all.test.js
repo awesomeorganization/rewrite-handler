@@ -28,6 +28,15 @@ const test = () => {
     pattern: '^/public/(.*)',
     replacement: '/files/$1',
   })
+  push({
+    replacementFunction(path) {
+      const prefix = '/static/'
+      if (path.startsWith(prefix) === true) {
+        return `/files/${path.substring(prefix.length)}`
+      }
+      return undefined
+    },
+  })
   http({
     listenOptions: {
       host: '127.0.0.1',
@@ -47,6 +56,13 @@ const test = () => {
         const { body } = await client.request({
           method: 'GET',
           path: '/public/test',
+        })
+        strictEqual(await data(body), '/files/test')
+      }
+      {
+        const { body } = await client.request({
+          method: 'GET',
+          path: '/static/test',
         })
         strictEqual(await data(body), '/files/test')
       }
