@@ -1,3 +1,5 @@
+/* eslint-disable node/no-unsupported-features/es-syntax */
+
 // REFERENCES
 // https://tools.ietf.org/html/rfc7231#section-7.1.2
 
@@ -12,6 +14,9 @@ export const REDIRECT_STATUS_CODES = {
 export const rewriteHandler = ({ rules = [] } = { rules: [] }) => {
   const compiledRules = []
   const handle = ({ request, response }) => {
+    if (request.aborted === true) {
+      return
+    }
     let statusCode
     for (const rule of compiledRules) {
       if ((rule.method !== undefined && rule.method !== request.method) || (rule.host !== undefined && rule.host !== request.headers.host)) {

@@ -1,7 +1,7 @@
 {
   "name": "@awesomeorganization/rewrite-handler",
   "description": "[ESM] The rewrite handler for Node.js",
-  "version": "0.1.5",
+  "version": "1.0.0",
   "exports": "./main.js",
   "type": "module",
   "repository": "github:awesomeorganization/rewrite-handler",
@@ -16,7 +16,7 @@
     "undici": "3.3.3"
   },
   "peerDependencies": {
-    "eslint": "7.22.0",
+    "eslint": "7.23.0",
     "prettier": "2.2.1"
   },
   "peerDependenciesMeta": {

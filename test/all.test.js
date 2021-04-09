@@ -1,3 +1,5 @@
+/* eslint-disable node/no-unsupported-features/es-syntax */
+
 import { REDIRECT_STATUS_CODES, rewriteHandler } from '../main.js'
 
 import { http } from '@awesomeorganization/servers'
@@ -66,6 +68,7 @@ const test = () => {
         })
         strictEqual(await data(body), '/files/test')
       }
+      await client.close()
       this.close()
     },
     onRequest(request, response) {
@@ -73,9 +76,10 @@ const test = () => {
         request,
         response,
       })
-      if (response.writableEnded === false) {
-        response.end(request.url)
+      if (response.writableEnded === true) {
+        return
       }
+      response.end(request.url)
     },
   })
 }
