@@ -14,7 +14,7 @@ export const REDIRECT_STATUS_CODES = {
 export const rewriteHandler = ({ rules = [] } = { rules: [] }) => {
   const compiledRules = []
   const handle = ({ request, response }) => {
-    if (request.aborted === true) {
+    if (request.aborted === true || response.writableEnded === true) {
       return
     }
     let statusCode
@@ -42,7 +42,6 @@ export const rewriteHandler = ({ rules = [] } = { rules: [] }) => {
         }
       }
     }
-    // IF LAST RULE HAS A STATUS CODE
     if (statusCode !== undefined) {
       response
         .writeHead(statusCode, {
